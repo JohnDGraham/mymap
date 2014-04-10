@@ -59,7 +59,7 @@ public class TestMyMap {
 		map.put(35, "bar");
 		map.put(5, "baz");
 		assertEquals(4, map.buckets.length);
-		
+
 		// Hashtable should expand after two more are added
 		map.put(2, "baz");
 		map.put(3, "bazz");

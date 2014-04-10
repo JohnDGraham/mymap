@@ -45,8 +45,23 @@ public class MyMap <K, V> {
 	 */
 	public void put(K key, V value) {
 		expandIfNecessary();
-		
-		// TODO: Store the key.
+        boolean newKey = true;
+		int hash = key.hashCode();
+        int bucketNumber = hash % buckets.length;
+        for (MyEntry<K,V> entry : buckets[bucketNumber]){
+            if (entry.getKey().equals(key)){
+                entry.setValue(value);
+                newKey = false;
+            }
+        }
+        if (newKey){
+            MyEntry newEntry = new MyEntry(key, value);
+            buckets[bucketNumber].add(newEntry);
+            numEntries++;
+        }
+
+
+
 	}
 	
 	/**
@@ -57,7 +72,13 @@ public class MyMap <K, V> {
 	 * @return
 	 */
 	public V get(K key) {
-		// TODO: retrieve the key.
+        int hash = key.hashCode();
+        int bucketNumber = hash % buckets.length;
+        for (MyEntry<K,V> entry : buckets[bucketNumber]){
+            if (entry.getKey().equals(key)){
+                return entry.getValue();
+            }
+        }
 		return null;
 	}
 	
@@ -65,7 +86,17 @@ public class MyMap <K, V> {
 	 * Expands the table to double the size, if necessary.
 	 */
 	private void expandIfNecessary() {
-		// TODO: expand if necessary
+		if (numEntries/buckets.length >= loadFactor){
+            List<MyEntry<K, V>> [] doubleBuckets = newArrayOfEntries(2*buckets.length);
+            for (int i = 0; i < buckets.length; i++){
+                for (MyEntry<K,V> entry : buckets[i]){
+                    int hash = entry.getKey().hashCode();
+                    int bucketNumber = hash % doubleBuckets.length;
+                    doubleBuckets[bucketNumber].add(entry);
+                }
+            }
+            buckets = doubleBuckets.clone();
+        }
 	}
 	
 	/**
